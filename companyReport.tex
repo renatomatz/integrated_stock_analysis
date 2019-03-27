@@ -1,0 +1,65 @@
+\documentclass{article}
+
+\usepackage{titlesec}
+\usepackage{titling}
+\usepackage[margin=2cm]{geometry}
+\usepackage{graphicx}
+
+\titleformat{\section}[runin]
+{\bfseries\Large}
+{}
+{0cm}
+{}[\titlerule\\]
+
+\titleformat{\subsection}
+{\bfseries\large}
+{}
+{0cm}
+{}
+
+\renewcommand{\maketitle}{
+\hspace{-.4cm}\begin{minipage}[t]{.6\textwidth}
+{\huge\bfseries\thetitle}
+
+\vspace{.1cm}{\large\itshape\theauthor}
+
+renatomatz@gmail.com -- https://www.rmatz.xyz
+
+\end{minipage}
+\hfill\vline\hfill
+\begin{minipage}[t]{.3\textwidth}
+{\Large\company}
+
+\vspace{.1cm}{\large\bfseries\ticker}
+
+\$\input{price.txt}
+\end{minipage}
+\vspace{.5cm}
+\hline\hline
+}
+
+\newcommand{\company}{Company}
+\newcommand{\ticker}{TKR}
+
+\begin{document}
+
+\title{Investment Analysis}
+\author{Renato Zimmermann}
+
+\maketitle
+
+\section{Industry Overview}
+
+\section{Company Overview}
+
+\begin{figure}[!h]
+\includegraphics[width=\linewidth]{graph.jpg}
+\end{figure}
+
+\section{Financials}
+
+\section{Strategic}
+
+\section{Recomendation}
+
+\end{document}
