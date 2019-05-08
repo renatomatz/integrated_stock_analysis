@@ -2,110 +2,162 @@ import quandl
 import pandas as pd
 from datetime import datetime, timedelta
 
-def get_processed(key_file="key.txt", config_file="config.txt"):
+def get_own_daily_metrics(config, key_file="key.txt"):
 
     _set_quandl_api_key(key_file)
 
-    config = _get_config(config_file)
+    # evebitda = quandl.get_table("SHARADAR/DAILY",
+    #                             paginate = True,
+    #                             ticker=config["ticker"],
+    #                             qopts={"columns": ["date", "evebitda"]})
+    
+    # prices = quandl.get_table("SHARADAR/SEP",
+    #                           paginate = True,
+    #                           ticker=config["ticker"],
+    #                           qopts={"columns": ["date", "close"]})
 
-    evebitda = quandl.get_table("SHARADAR/DAILY",
-                                paginate = True,
-                                ticker=config["ticker"],
-                                qopts={"columns": ["date", "evebitda"]})
+    evebitda = _read_and_standardize("test_files/evebitda.csv")
+    prices = _read_and_standardize("test_files/prices.csv")
 
-    prices = quandl.get_table("SHARADAR/SEP",
-                              paginate = True,
-                              ticker=config["ticker"],
-                              qopts={"columns": ["date", "close"]})
-
-    prices = prices.set_index("date")
-    evebitda = evebitda.set_index("date")
+    data = pd.merge(left=evebitda, right=prices, on="date", how="inner").set_index("date")
 
     try:
-        prices.loc[config["end_date"]]
-        evebitda.loc[config["end_date"]]
+        data.loc[config["end_date"]]
     except KeyError:
-        end_date = evebitda.index[0]
-        start_date = config["end_date"] - timedelta(days=700)
+        config["end_date"] = max(data.index)
+        config["start_date"] = config["end_date"] - timedelta(days=700)
 
-    prices_mask = (prices.index > config["start_date"]) & (prices.index <= config["end_date"])
-    evebitda_mask = (evebitda.index > config["start_date"]) & (evebitda.index <= config["end_date"])
-    prices = prices[prices_mask]
-    evebitda = evebitda[evebitda_mask]
+    data = data[(data.index > config["start_date"]) & (data.index <= config["end_date"])]
 
-    result = pd.DataFrame(prices, evebitda)
+    return data
 
-    return result
-
-
-def get_comps(key_file="key.txt", config_file="config.txt", end=2019, years=5, time="close"):
+def get_own_fundamentals(config, key_file="key.txt"):
 
     _set_quandl_api_key(key_file)
 
-    config = _get_config(config_file)
+    # data = quandl.get_table("SHARADAR/SF1", ticker=[config["ticker"]],
+    #                         qopts = {"columns": ["calendardate", "price", "ev", "ebitda",
+    #                                              "grossmargin", "revenue", "fcf", "workingcapital"]})
 
-    metadata = quandl.get_table("SHRADAR/TICKERS",
-                                paginate=True,
-                                qopts={"columns": ["ticker", "name", "category",
-                                                   "siccode", "sicsector", "sicindustry",
-                                                   "scalemarketcap", "lastupdated"]})
+    data = _read_and_standardize("test_files/own_funds.csv", date_col="calendardate")
 
-    metadata["scalemarketcap"] = metadata["scalemarketcap"].map(lambda x: int(x[0]))
+    data["ev/ebitda"] = data["ev"] / data["ebitda"]
+    data["ev/sales"] = data["ev"] / data["revenue"]
+    data["ev/fcf"] = data["ev"] / data["fcf"]
+    data["nwc_percent_sales"] = (data["workingcapital"] / data["revenue"])*100
+
+    data = data.set_index("calendardate")
+
+    return data
+
+def get_comps(config, key_file="key.txt", config_file="config.txt", end=2019, years=5, time="close"):
+
+    _set_quandl_api_key(key_file)
+
+    # data = quandl.get_table("SHARADAR/TICKERS",
+    #                             paginate=True,
+    #                             qopts={"columns": ["ticker", "name", "category",
+    #                                                "siccode", "scalemarketcap", "lastupdated"]})
+
+    data = _read_and_standardize("test_files/comps.csv", date_col="lastupdated")
+
+    data["scalemarketcap"] = data["scalemarketcap"].apply(lambda x: int(x[0]) if x else None)
     # keep only scale category number
+    data = data.groupby("ticker").apply(lambda x: x[x["lastupdated"] == max(x["lastupdated"])])
+    # remove name duplicates, selecting most recent
+    data.index = data.droplevel(level=1)
+    data = data.drop_duplicates()
+    # drop second index level created from aggregation and keep uniques
 
-    ticker_data = metadata[metadata["ticker"] == config["ticker"]]
-    ticker_cap = ticker_data["scalemarketcap"]
+    ticker_data = data[data["ticker"] == config["ticker"]]
+    if len(ticker_data) == 0:
+        raise ValueError("Ticker does not exist")
 
-    comps = metadata[ticker_cap-1 <= metadata["scalemarketcap"] <= ticker_cap+1]
+    ticker_cap = int(ticker_data["scalemarketcap"])
+
+    data = data[ticker_cap-1 <= data["scalemarketcap"]]
+    data = data[data["scalemarketcap"] <= ticker_cap+1]
     # keep only data of companies with similar market cap
+    
     i = 1
     # such that one digit is revealed at a time
+    comps = data
 
-    while (len(comps) > 6) and (i < len(ticker_data["siccode"])):
+    while (len(comps) > 6) and (i < 5):
         # make sic code become broader until there are at least three comps or first sic code digit
-        comps = comps[ticker_data["siccode"][:i] in comps["siccode"]]
+        comps = data[(int(ticker_data["siccode"]) % (10**i)) == data["siccode"].apply(lambda x: x % (10**i) if x else x)]
         i += 1
 
     if len(comps) < 3:
-        comps = metadata[ticker_data["siccode"][:i-1] in metadata["siccode"]]
+        comps = data[(int(ticker_data["siccode"]) % (10**i-1)) == data["siccode"].apply(lambda x: x % (10**i-1) if x else x)]
         # if there are less than three comps, select comps of one "level" above
      
     if len(comps) > 6:
         comps = comps.iloc[0:6]
         # guarantees there will be between 3 and 6 comps
 
+    comps = _standardize_index(comps)
 
-    comps_metrics = quandl.get_table("SHARADAR/DAILY",
-                                     paginate = True,
-                                     ticker=[*comps["ticker"]],
-                                     qopts={"columns": ["ticker", "date", "ev", "marketcap", "evebit", "evebitda"]})
+    return comps
 
-    comps_merged = pd.merge(left=comps, right=comps_metrics, 
-                            left_on=["ticker", "lastupdated"], right_on=["ticker", "date"], how="left")
-
-    comps_merged = comps_merged[["name", "ticker", "ev", "marketcap", "evebit", "evebitda"]]
-
-    return comps_merged
+def get_comp_fundamentals(comps, key_file="key.txt"):
     
+    _set_quandl_api_key(key_file)
+
+    # data = quandl.get_table("SHARADAR/SF1",
+    #                                 paginate = True,
+    #                                 ticker=comps,
+    #                                 qopts={"columns": ["ticker", "calendardate", "price", "ev", 
+    #                                                    "marketcap", "ebitda", "revenue", "fcf"]})
+                                                       
+    data = _read_and_standardize("test_files/comp_metrics.csv", date_col="calendardate")
+
+    data["ev/ebitda"] = data["ev"] / data["ebitda"]
+    data["ev/sales"] = data["ev"] / data["revenue"]
+    data["ev/fcf"] = data["ev"] / data["fcf"]
+    # create new metrics 
+
+    data = _standardize_index(data)
+
+    return data
+    
+def get_daily_comp_metrics(comps, key_file="key.txt"):
+
+    _set_quandl_api_key(key_file)
+
+    comp_metrics = quandl.get_table("SHARADAR/DAILY", ticker=comps,
+                                    qopts={"columns": ["ticker", "date", "evebitda"]})
+
+    return comp_metrics
 
 def get_press_releases():
     pass
+
+def get_config(file):
+
+    config = {}
+
+    with open(file, "r") as conf:
+        config["company"] = conf.readline()[8:-1]
+        config["ticker"] = conf.readline()[7:-1]
+        config["end_date"] = datetime.strptime(conf.readline()[12:-1], "%Y-%m-%d")
+        config["start_date"] = config["end_date"] - timedelta(days=700)
+
+    return config
+
+def _standardize_index(df):
+    return df.set_index(pd.Series(range(len(df))))
+
+def _read_and_standardize(file, date_col="date"):
+    result = pd.read_csv(file, index_col=0,
+                         converters={date_col: lambda x: datetime.strptime(x, "%Y-%m-%d")})
+    return result.where(pd.notnull(result), None)
 
 def _set_quandl_api_key(file):
 
     with open(file, "r") as key:
         quandl.ApiConfig.api_key = key.readline()
 
-def _get_config(file):
-
-    config = {}
-
-    with open(file, "r") as config:
-        config["company"] = config.readline()[8:-1]
-        config["ticker"] = config.readline()[7:-1]
-        config["end_date"] = datetime.strptime(config.readline()[12:-1], "%Y-%m-%d")
-        config["start_date"] = config["end_date"] - timedelta(days=700)
-
-    return config
 
 
+#################### TESTING ###########################
