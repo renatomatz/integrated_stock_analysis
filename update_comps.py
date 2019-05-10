@@ -22,6 +22,8 @@ comps_merged = pd.merge(left=comp_funds_latest, right=comps,
 
 comps_merged = comps_merged[["name", "ticker", "price", "marketcap", "ev/ebitda", "ev/sales", "ev/fcf"]]
 # maintail relevant columns
+comps_merged = import_data.round_col(comps_merged, ["marketcap"], to="B")
+comps_merged.loc[:, "price":] = comps_merged.loc[:, "price":].apply(lambda x: round(x, 2))
 
 comps_merged.columns = ["Name", "Ticker", "Stock Price", "Market Cap.", "EV/EBITDA", "EV/SALES", "EV/FCF"]
 comps_merged = comps_merged.set_index("Ticker")

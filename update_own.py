@@ -35,6 +35,8 @@ funds_pretty.index.names = ["Date"]
 funds_pretty = import_data.round_col(funds_pretty, ["Ent. Value", "EBITDA", "Sales", "Free Cash Flow", "Working Cap."], to="B")
 funds_pretty.index = funds_pretty.index.map(lambda x: x.strftime("%b %y"))
 
+funds_pretty = funds_pretty.apply(lambda x: round(x, 2)).transpose()
+
 funds_pretty.to_csv("charts/own_fundamentals.csv")
 
 ## SALES GROWTH
