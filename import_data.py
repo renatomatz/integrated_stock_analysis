@@ -6,18 +6,18 @@ def get_own_daily_metrics(config, key_file="key.txt"):
 
     _set_quandl_api_key(key_file)
 
-    # evebitda = quandl.get_table("SHARADAR/DAILY",
-    #                             paginate = True,
-    #                             ticker=config["ticker"],
-    #                             qopts={"columns": ["date", "evebitda"]})
+    evebitda = quandl.get_table("SHARADAR/DAILY",
+                                paginate = True,
+                                ticker=config["ticker"],
+                                qopts={"columns": ["date", "evebitda"]})
     
-    # prices = quandl.get_table("SHARADAR/SEP",
-    #                           paginate = True,
-    #                           ticker=config["ticker"],
-    #                           qopts={"columns": ["date", "close"]})
+    prices = quandl.get_table("SHARADAR/SEP",
+                              paginate = True,
+                              ticker=config["ticker"],
+                              qopts={"columns": ["date", "close"]})
 
-    evebitda = _read_and_standardize("test_files/evebitda.csv")
-    prices = _read_and_standardize("test_files/prices.csv")
+    # evebitda = _read_and_standardize("test_files/evebitda.csv")
+    # prices = _read_and_standardize("test_files/prices.csv")
 
     data = pd.merge(left=evebitda, right=prices, on="date", how="inner").set_index("date")
 
@@ -35,11 +35,11 @@ def get_own_fundamentals(config, key_file="key.txt"):
 
     _set_quandl_api_key(key_file)
 
-    # data = quandl.get_table("SHARADAR/SF1", ticker=[config["ticker"]],
-    #                         qopts = {"columns": ["calendardate", "price", "ev", "ebitda",
-    #                                              "grossmargin", "revenue", "fcf", "workingcapital"]})
+    data = quandl.get_table("SHARADAR/SF1", ticker=[config["ticker"]],
+                            qopts = {"columns": ["calendardate", "price", "ev", "ebitda",
+                                                 "grossmargin", "revenue", "fcf", "workingcapital"]})
 
-    data = _read_and_standardize("test_files/own_funds.csv", col="calendardate")
+    # data = _read_and_standardize("test_files/own_funds.csv", col="calendardate")
 
     data["ev/ebitda"] = data["ev"] / data["ebitda"]
     data["ev/sales"] = data["ev"] / data["revenue"]
@@ -54,12 +54,12 @@ def get_comps(config, key_file="key.txt", config_file="config.txt", end=2019, ye
 
     _set_quandl_api_key(key_file)
 
-    # data = quandl.get_table("SHARADAR/TICKERS",
-    #                             paginate=True,
-    #                             qopts={"columns": ["ticker", "name", "category",
-    #                                                "siccode", "scalemarketcap", "lastupdated"]})
+    data = quandl.get_table("SHARADAR/TICKERS",
+                                paginate=True,
+                                qopts={"columns": ["ticker", "name", "category",
+                                                   "siccode", "scalemarketcap", "lastupdated"]})
 
-    data = _read_and_standardize("test_files/comps.csv", col="lastupdated")
+    # data = _read_and_standardize("test_files/comps.csv", col="lastupdated")
 
     data["scalemarketcap"] = data["scalemarketcap"].apply(lambda x: int(x[0]) if x else None)
     # keep only scale category number
@@ -104,13 +104,13 @@ def get_comp_fundamentals(comps, key_file="key.txt"):
     
     _set_quandl_api_key(key_file)
 
-    # data = quandl.get_table("SHARADAR/SF1",
-    #                                 paginate = True,
-    #                                 ticker=comps,
-    #                                 qopts={"columns": ["ticker", "calendardate", "price", "ev", 
-    #                                                    "marketcap", "ebitda", "revenue", "fcf"]})
+    data = quandl.get_table("SHARADAR/SF1",
+                                    paginate = True,
+                                    ticker=comps,
+                                    qopts={"columns": ["ticker", "calendardate", "price", "ev", 
+                                                       "marketcap", "ebitda", "revenue", "fcf"]})
                                                        
-    data = _read_and_standardize("test_files/comp_metrics.csv", col=["calendardate", "ticker"])
+    # data = _read_and_standardize("test_files/comp_metrics.csv", col=["calendardate", "ticker"])
 
     data["ev/ebitda"] = data["ev"] / data["ebitda"]
     data["ev/sales"] = data["ev"] / data["revenue"]
@@ -132,10 +132,10 @@ def get_own_events(config, key_file="key.txt"):
     
     _set_quandl_api_key(key_file)
 
-    # events = quandl.get_table("SHARADAR/EVENTS", ticker=[config["ticker"]], 
-    #                           qopts={"columns":["date", "eventcodes"]})
+    events = quandl.get_table("SHARADAR/EVENTS", ticker=[config["ticker"]], 
+                              qopts={"columns":["date", "eventcodes"]})
 
-    events = _read_and_standardize("test_files/own_events.csv")
+    # events = _read_and_standardize("test_files/own_events.csv")
 
     events["eventcodes"] = events["eventcodes"].map(lambda x: x.split("|"))
 
@@ -183,6 +183,3 @@ def _set_quandl_api_key(file):
     with open(file, "r") as key:
         quandl.ApiConfig.api_key = key.readline().rstrip("\n")
 
-
-
-#################### TESTING ###########################

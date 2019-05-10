@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018/Arch Linux) (preloaded format=pdflatex 2019.3.1)  20 MAR 2019 23:04
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018/Arch Linux) (preloaded format=pdflatex 2019.3.1)  10 MAY 2019 10:50
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -90,21 +90,89 @@ File: pdftex.def 2018/01/08 v1.0l Graphics/color driver for pdftex
 \Gin@req@height=\dimen116
 \Gin@req@width=\dimen117
 )
-(./companyReport.aux)
+(/usr/share/texmf-dist/tex/latex/caption/subcaption.sty
+Package: subcaption 2018/05/01 v1.1-162 Sub-captions (AR)
+
+(/usr/share/texmf-dist/tex/latex/caption/caption.sty
+Package: caption 2018/10/06 v3.3-154 Customizing captions (AR)
+
+(/usr/share/texmf-dist/tex/latex/caption/caption3.sty
+Package: caption3 2018/09/12 v1.8c caption3 kernel (AR)
+Package caption3 Info: TeX engine: e-TeX on input line 64.
+\captionmargin=\dimen118
+\captionmargin@=\dimen119
+\captionwidth=\dimen120
+\caption@tempdima=\dimen121
+\caption@indent=\dimen122
+\caption@parindent=\dimen123
+\caption@hangindent=\dimen124
+)
+\c@caption@flags=\count91
+\c@ContinuedFloat=\count92
+)
+\c@subfigure=\count93
+\c@subtable=\count94
+)
+(/usr/share/texmf-dist/tex/latex/csvsimple/csvsimple.sty
+Package: csvsimple 2016/07/01 version 1.20 LaTeX CSV file processing
+
+(/usr/share/texmf-dist/tex/latex/pgf/utilities/pgfkeys.sty
+(/usr/share/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex
+\pgfkeys@pathtoks=\toks17
+\pgfkeys@temptoks=\toks18
+
+(/usr/share/texmf-dist/tex/generic/pgf/utilities/pgfkeysfiltered.code.tex
+\pgfkeys@tmptoks=\toks19
+)))
+(/usr/share/texmf-dist/tex/latex/base/ifthen.sty
+Package: ifthen 2014/09/29 v1.1c Standard LaTeX ifthen package (DPC)
+)
+(/usr/share/texmf-dist/tex/latex/etoolbox/etoolbox.sty
+Package: etoolbox 2018/08/19 v2.5f e-TeX tools for LaTeX (JAW)
+\etb@tempcnta=\count95
+)
+(/usr/share/texmf-dist/tex/latex/tools/shellesc.sty
+Package: shellesc 2016/06/07 v0.02a unified shell escape interface for LaTeX
+Package shellesc Info: Restricted shell escape enabled on input line 69.
+)
+\csv@file=\read1
+\c@csvinputline=\count96
+\c@csvrow=\count97
+\c@csvcol=\count98
+\csv@out=\write3
+)
+(/usr/share/texmf-dist/tex/latex/tools/longtable.sty
+Package: longtable 2014/10/28 v4.11 Multi-page Table package (DPC)+ FMi change
+\LTleft=\skip48
+\LTright=\skip49
+\LTpre=\skip50
+\LTpost=\skip51
+\LTchunksize=\count99
+\LTcapwidth=\dimen125
+\LT@head=\box28
+\LT@firsthead=\box29
+\LT@foot=\box30
+\LT@lastfoot=\box31
+\LT@cols=\count100
+\LT@rows=\count101
+\c@LT@tables=\count102
+\c@LT@chunks=\count103
+\LT@p@ftn=\toks20
+) (./companyReport.aux)
 \openout1 = `companyReport.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 44.
-LaTeX Font Info:    ... okay on input line 44.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 44.
-LaTeX Font Info:    ... okay on input line 44.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 44.
-LaTeX Font Info:    ... okay on input line 44.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 44.
-LaTeX Font Info:    ... okay on input line 44.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 44.
-LaTeX Font Info:    ... okay on input line 44.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 44.
-LaTeX Font Info:    ... okay on input line 44.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 47.
+LaTeX Font Info:    ... okay on input line 47.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 47.
+LaTeX Font Info:    ... okay on input line 47.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 47.
+LaTeX Font Info:    ... okay on input line 47.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 47.
+LaTeX Font Info:    ... okay on input line 47.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 47.
+LaTeX Font Info:    ... okay on input line 47.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 47.
+LaTeX Font Info:    ... okay on input line 47.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -142,17 +210,17 @@ LaTeX Font Info:    ... okay on input line 44.
 
 (/usr/share/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count91
-\scratchdimen=\dimen118
-\scratchbox=\box28
-\nofMPsegments=\count92
-\nofMParguments=\count93
-\everyMPshowfont=\toks17
-\MPscratchCnt=\count94
-\MPscratchDim=\dimen119
-\MPnumerator=\count95
-\makeMPintoPDFobject=\count96
-\everyMPtoPDFconversion=\toks18
+\scratchcounter=\count104
+\scratchdimen=\dimen126
+\scratchbox=\box32
+\nofMPsegments=\count105
+\nofMParguments=\count106
+\everyMPshowfont=\toks21
+\MPscratchCnt=\count107
+\MPscratchDim=\dimen127
+\MPnumerator=\count108
+\makeMPintoPDFobject=\count109
+\everyMPtoPDFconversion=\toks22
 ) (/usr/share/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
 Package: epstopdf-base 2016/05/15 v2.6 Base part for package epstopdf
 
@@ -204,69 +272,190 @@ G,.JBIG2,.JB2,.eps]
 (/usr/share/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
-)) (./price.txt)
+))
+Package caption Info: Begin \AtBeginDocument code.
+Package caption Info: longtable package is loaded.
+
+(/usr/share/texmf-dist/tex/latex/caption/ltcaption.sty
+Package: ltcaption 2018/08/26 v1.4-95 longtable captions (AR)
+)
+Package caption Info: End \AtBeginDocument code.
+ (./charts/price.txt)
 ! Misplaced \noalign.
 \hline ->\noalign 
                   {\ifnum 0=`}\fi \hrule \@height \arrayrulewidth \futurelet...
-l.49 \maketitle
+l.52 \maketitle
                
 ? 
 ! Misplaced \noalign.
 \hline ->\noalign 
                   {\ifnum 0=`}\fi \hrule \@height \arrayrulewidth \futurelet...
-l.49 \maketitle
+l.52 \maketitle
                
 ? 
 
-Underfull \hbox (badness 10000) in paragraph at lines 53--53
-
- []
-
-<graph.jpg, id=1, 462.528pt x 346.896pt>
-File: graph.jpg Graphic file (type jpg)
-<use graph.jpg>
-Package pdftex.def Info: graph.jpg  used on input line 56.
-(pdftex.def)             Requested size: 500.484pt x 375.38313pt.
-
-Underfull \hbox (badness 10000) in paragraph at lines 59--59
+Underfull \hbox (badness 10000) in paragraph at lines 56--56
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 61--61
+Underfull \hbox (badness 10000) in paragraph at lines 58--58
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 63--63
+Underfull \hbox (badness 10000) in paragraph at lines 60--60
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 65--65
+Underfull \hbox (badness 10000) in paragraph at lines 62--62
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 64--64
 
  []
 
 [1
 
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map} <./graph.jpg>]
-(./companyReport.aux) ) 
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 69.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 69.
+
+! Extra }, or forgotten $.
+<template> \unskip \hfil }
+                          \hskip \tabcolsep \hskip -.5\arrayrulewidth \vrule...
+l.69 \csvautotabular{charts/own_fundamentals.csv}
+                                                 
+? 
+! Missing $ inserted.
+<inserted text> 
+                $
+l.69 \csvautotabular{charts/own_fundamentals.csv}
+                                                 
+? 
+! Missing } inserted.
+<inserted text> 
+                }
+l.69 \csvautotabular{charts/own_fundamentals.csv}
+                                                 
+? 
+! Extra }, or forgotten $.
+<template> \unskip \hfil }
+                          \hskip \tabcolsep \hskip -.5\arrayrulewidth \vrule...
+l.69 \csvautotabular{charts/own_fundamentals.csv}
+                                                 
+? 
+! Missing $ inserted.
+<inserted text> 
+                $
+l.69 \csvautotabular{charts/own_fundamentals.csv}
+                                                 
+? 
+! Missing } inserted.
+<inserted text> 
+                }
+l.69 \csvautotabular{charts/own_fundamentals.csv}
+                                                 
+? 
+! Extra }, or forgotten $.
+<template> \unskip \hfil }
+                          \hskip \tabcolsep \hskip -.5\arrayrulewidth \vrule...
+l.69 \csvautotabular{charts/own_fundamentals.csv}
+                                                 
+? 
+! Missing $ inserted.
+<inserted text> 
+                $
+l.69 \csvautotabular{charts/own_fundamentals.csv}
+                                                 
+? 
+! Missing } inserted.
+<inserted text> 
+                }
+l.69 \csvautotabular{charts/own_fundamentals.csv}
+                                                 
+? 
+! Extra }, or forgotten $.
+<template> \unskip \hfil }
+                          \hskip \tabcolsep \hskip -.5\arrayrulewidth \vrule...
+l.69 \csvautotabular{charts/own_fundamentals.csv}
+                                                 
+? 
+! Missing $ inserted.
+<inserted text> 
+                $
+l.69 \csvautotabular{charts/own_fundamentals.csv}
+                                                 
+? 
+! Missing } inserted.
+<inserted text> 
+                }
+l.69 \csvautotabular{charts/own_fundamentals.csv}
+                                                 
+? 
+! Extra }, or forgotten $.
+<template> \unskip \hfil }
+                          \hskip \tabcolsep \hskip -.5\arrayrulewidth \vrule...
+l.69 \csvautotabular{charts/own_fundamentals.csv}
+                                                 
+? 
+! Missing $ inserted.
+<inserted text> 
+                $
+l.69 \csvautotabular{charts/own_fundamentals.csv}
+                                                 
+? 
+! Missing } inserted.
+<inserted text> 
+                }
+l.69 \csvautotabular{charts/own_fundamentals.csv}
+                                                 
+? 
+<charts/graph.jpg, id=10, 462.528pt x 346.896pt>
+File: charts/graph.jpg Graphic file (type jpg)
+<use charts/graph.jpg>
+Package pdftex.def Info: charts/graph.jpg  used on input line 73.
+(pdftex.def)             Requested size: 375.36299pt x 281.5347pt.
+<charts/events.jpg, id=11, 462.528pt x 346.896pt>
+File: charts/events.jpg Graphic file (type jpg)
+<use charts/events.jpg>
+Package pdftex.def Info: charts/events.jpg  used on input line 77.
+(pdftex.def)             Requested size: 200.19054pt x 150.1416pt.
+<charts/sales_growth.jpg, id=12, 462.528pt x 346.896pt>
+File: charts/sales_growth.jpg Graphic file (type jpg)
+<use charts/sales_growth.jpg>
+Package pdftex.def Info: charts/sales_growth.jpg  used on input line 81.
+(pdftex.def)             Requested size: 200.19054pt x 150.1416pt.
+<charts/comps_graph.jpg, id=13, 462.528pt x 346.896pt>
+File: charts/comps_graph.jpg Graphic file (type jpg)
+<use charts/comps_graph.jpg>
+Package pdftex.def Info: charts/comps_graph.jpg  used on input line 90.
+(pdftex.def)             Requested size: 500.484pt x 375.38313pt.
+[2 <./charts/graph.jpg> <./charts/events.jpg> <./charts/sales_growth.jpg>]
+[3 <./charts/comps_graph.jpg>] (./companyReport.aux) ) 
 Here is how much of TeX's memory you used:
- 2243 strings out of 492616
- 31381 string characters out of 6135178
- 102091 words of memory out of 5000000
- 6146 multiletter control sequences out of 15000+600000
- 6111 words of font info for 22 fonts, out of 8000000 for 9000
+ 4859 strings out of 492616
+ 83716 string characters out of 6135178
+ 165528 words of memory out of 5000000
+ 8713 multiletter control sequences out of 15000+600000
+ 6410 words of font info for 23 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 41i,5n,32p,280b,214s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cm
-bx12.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/
-share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texmf-dis
-t/fonts/type1/public/amsfonts/cm/cmti12.pfb>
-Output written on companyReport.pdf (1 page, 108405 bytes).
+ 42i,8n,46p,801b,442s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/share/texmf-dist/fo
+nts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texmf-dist/fonts/type1/publ
+ic/amsfonts/cm/cmmi10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm
+/cmr10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></us
+r/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/texmf-di
+st/fonts/type1/public/amsfonts/cm/cmti12.pfb>
+Output written on companyReport.pdf (3 pages, 288997 bytes).
 PDF statistics:
- 25 PDF objects out of 1000 (max. 8388607)
- 16 compressed objects within 1 object stream
+ 42 PDF objects out of 1000 (max. 8388607)
+ 26 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 6 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 21 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -3,11 +3,11 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 config = import_data.get_config("test_files/config.txt")
-# comps = import_data.get_comps(config)
-# comp_funds = import_data.get_comp_fundamentals([*comps["ticker"]])
+comps = import_data.get_comps(config)
+comp_funds = import_data.get_comp_fundamentals([*comps["ticker"]])
 
-comps = pd.read_csv("test_files/comps_processed.csv")
-comp_funds = import_data._read_and_standardize("test_files/comps_funds_processed.csv", col=["calendardate", "ticker"])
+# comps = pd.read_csv("test_files/comps_processed.csv")
+# comp_funds = import_data._read_and_standardize("test_files/comps_funds_processed.csv", col=["calendardate", "ticker"])
 
 
 # BASIC COMPS

@@ -11,13 +11,13 @@ ALPHA = 0.7
 register_matplotlib_converters()
 
 config = import_data.get_config("test_files/config.txt")
-# data = import_data.get_own_daily_metrics(config)
-# funds = import_data.get_own_fundamentals(config)
-# events = import_data.get_own_events(config)
+data = import_data.get_own_daily_metrics(config)
+funds = import_data.get_own_fundamentals(config)
+events = import_data.get_own_events(config)
 
-data = import_data._read_and_standardize("test_files/own_daily_processed.csv")
-funds = import_data._read_and_standardize("test_files/own_funds_processed.csv", col="calendardate")
-events = import_data._read_and_standardize("test_files/own_events_processed.csv")
+# data = import_data._read_and_standardize("test_files/own_daily_processed.csv")
+# funds = import_data._read_and_standardize("test_files/own_funds_processed.csv", col="calendardate")
+# events = import_data._read_and_standardize("test_files/own_events_processed.csv")
 
 with open("charts/price.txt", "w") as f:
     f.write(str(float(data["close"].iloc[0])))
