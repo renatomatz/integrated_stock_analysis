@@ -10,7 +10,7 @@ ALPHA = 0.7
 
 register_matplotlib_converters()
 
-config = import_data.get_config("test_files/config.txt")
+config = import_data.get_config("config.txt")
 data = import_data.get_own_daily_metrics(config)
 funds = import_data.get_own_fundamentals(config)
 events = import_data.get_own_events(config)

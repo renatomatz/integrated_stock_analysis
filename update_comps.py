@@ -2,7 +2,7 @@ import import_data
 import pandas as pd
 import matplotlib.pyplot as plt
 
-config = import_data.get_config("test_files/config.txt")
+config = import_data.get_config("config.txt")
 comps = import_data.get_comps(config)
 comp_funds = import_data.get_comp_fundamentals([*comps["ticker"]])
 
