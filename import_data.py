@@ -39,7 +39,7 @@ def get_own_fundamentals(config, key_file="key.txt"):
     #                         qopts = {"columns": ["calendardate", "price", "ev", "ebitda",
     #                                              "grossmargin", "revenue", "fcf", "workingcapital"]})
 
-    data = _read_and_standardize("test_files/own_funds.csv", date_col="calendardate")
+    data = _read_and_standardize("test_files/own_funds.csv", col="calendardate")
 
     data["ev/ebitda"] = data["ev"] / data["ebitda"]
     data["ev/sales"] = data["ev"] / data["revenue"]
@@ -59,11 +59,11 @@ def get_comps(config, key_file="key.txt", config_file="config.txt", end=2019, ye
     #                             qopts={"columns": ["ticker", "name", "category",
     #                                                "siccode", "scalemarketcap", "lastupdated"]})
 
-    data = _read_and_standardize("test_files/comps.csv", date_col="lastupdated")
+    data = _read_and_standardize("test_files/comps.csv", col="lastupdated")
 
     data["scalemarketcap"] = data["scalemarketcap"].apply(lambda x: int(x[0]) if x else None)
     # keep only scale category number
-    data = data.groupby("ticker").apply(lambda x: x[x["lastupdated"] == max(x["lastupdated"])])
+    data = data.groupby("ticker").apply(lambda x: x[x.index == max(x.index)])
     # remove name duplicates, selecting most recent
     data.index = data.droplevel(level=1)
     data = data.drop_duplicates()
@@ -110,14 +110,12 @@ def get_comp_fundamentals(comps, key_file="key.txt"):
     #                                 qopts={"columns": ["ticker", "calendardate", "price", "ev", 
     #                                                    "marketcap", "ebitda", "revenue", "fcf"]})
                                                        
-    data = _read_and_standardize("test_files/comp_metrics.csv", date_col="calendardate")
+    data = _read_and_standardize("test_files/comp_metrics.csv", col=["calendardate", "ticker"])
 
     data["ev/ebitda"] = data["ev"] / data["ebitda"]
     data["ev/sales"] = data["ev"] / data["revenue"]
     data["ev/fcf"] = data["ev"] / data["fcf"]
     # create new metrics 
-
-    data = _standardize_index(data)
 
     return data
     
@@ -130,8 +128,18 @@ def get_daily_comp_metrics(comps, key_file="key.txt"):
 
     return comp_metrics
 
-def get_press_releases():
-    pass
+def get_own_events(config, key_file="key.txt"):
+    
+    _set_quandl_api_key(key_file)
+
+    # events = quandl.get_table("SHARADAR/EVENTS", ticker=[config["ticker"]], 
+    #                           qopts={"columns":["date", "eventcodes"]})
+
+    events = _read_and_standardize("test_files/own_events.csv")
+
+    events["eventcodes"] = events["eventcodes"].map(lambda x: x.split("|"))
+
+    return events
 
 def get_config(file):
 
@@ -145,18 +153,35 @@ def get_config(file):
 
     return config
 
+def round_col(df, cols, to="M"):
+    new_cols = {}
+    div = 10**(9 if to == "B" else 6 if to == "M" else 3 if to == "k" else 0)
+
+    for c in cols:
+        new_cols[c] = "{} (${})".format(c, to)
+        df[c] = df[c] / div
+
+    return df.rename(columns=new_cols, inplace=False)
+
 def _standardize_index(df):
     return df.set_index(pd.Series(range(len(df))))
 
-def _read_and_standardize(file, date_col="date"):
-    result = pd.read_csv(file, index_col=0,
+def _read_and_standardize(file, col="date"):
+
+    date_col = col[0] if isinstance(col, list) else col
+
+    result = pd.read_csv(file, index_col=col,
                          converters={date_col: lambda x: datetime.strptime(x, "%Y-%m-%d")})
+
+    if "None" in result.columns:
+        del result["None"]
+
     return result.where(pd.notnull(result), None)
 
 def _set_quandl_api_key(file):
 
     with open(file, "r") as key:
-        quandl.ApiConfig.api_key = key.readline()
+        quandl.ApiConfig.api_key = key.readline().rstrip("\n")
 
 
 

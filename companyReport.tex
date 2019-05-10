@@ -4,6 +4,8 @@
 \usepackage{titling}
 \usepackage[margin=2cm]{geometry}
 \usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{csvsimple}
 
 \titleformat{\section}[runin]
 {\bfseries\Large}
@@ -32,7 +34,7 @@ renatomatz@gmail.com -- https://www.rmatz.xyz
 
 \vspace{.1cm}{\large\bfseries\ticker}
 
-\$\input{price.txt}
+\$\input{charts/price.txt}
 \end{minipage}
 \vspace{.5cm}
 \hline\hline
@@ -52,14 +54,43 @@ renatomatz@gmail.com -- https://www.rmatz.xyz
 
 \section{Company Overview}
 
-\begin{figure}[!h]
-\includegraphics[width=\linewidth]{graph.jpg}
-\end{figure}
-
 \section{Financials}
 
 \section{Strategic}
 
 \section{Recomendation}
+
+\pagebreak
+\section{Appendix}
+
+\csvtotabular{charts/own_fundamentals.csv}
+\begin{figure}[!h]
+
+\begin{subfigure}[t]{0.6\linewidth}
+\includegraphics[width=\linewidth]{charts/graph.jpg}
+\caption{Stock Prices and EV/EBITDA}	
+\end{subfigure}
+
+\begin{subfigure}[b]{0.4\linewidth}
+\includegraphics[width=\linewidth]{charts/events.jpg}
+\caption{Corporate Events}
+\end{subfigure}
+
+\begin{subfigure}[b]{0.4\linewidth}
+\includegraphics[width=\linewidth]{charts/sales_growth.jpg}
+\caption{Sales Growth}
+\end{subfigure}
+
+\end{figure}
+\caption{\company Analysis}
+
+\csvtotabular{charts/comps.csv}
+\begin{figure}[!h]
+
+\includegraphics[width=\linewidth]{charts/comps_graph.jpg}
+
+\end{figure}
+
+
 
 \end{document}
