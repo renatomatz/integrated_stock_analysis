@@ -6,6 +6,7 @@
 \usepackage{graphicx}
 \usepackage{subcaption}
 \usepackage{csvsimple}
+\usepackage{longtable}
 
 \titleformat{\section}[runin]
 {\bfseries\Large}
@@ -60,34 +61,34 @@ renatomatz@gmail.com -- https://www.rmatz.xyz
 
 \section{Recomendation}
 
-\pagebreak
+\newpage
+
 \section{Appendix}
 
-\csvtotabular{charts/own_fundamentals.csv}
+\vfill\centering
+\csvautotabular{charts/own_fundamentals.csv}
 \begin{figure}[!h]
-
-\begin{subfigure}[t]{0.6\linewidth}
-\includegraphics[width=\linewidth]{charts/graph.jpg}
-\caption{Stock Prices and EV/EBITDA}	
-\end{subfigure}
-
-\begin{subfigure}[b]{0.4\linewidth}
-\includegraphics[width=\linewidth]{charts/events.jpg}
-\caption{Corporate Events}
-\end{subfigure}
-
-\begin{subfigure}[b]{0.4\linewidth}
-\includegraphics[width=\linewidth]{charts/sales_growth.jpg}
-\caption{Sales Growth}
-\end{subfigure}
-
+	\centering
+	\begin{subfigure}[b]{0.75\linewidth}
+		\includegraphics[width=\linewidth]{charts/graph.jpg}
+		\caption{Stock Prices and EV/EBITDA}	
+	\end{subfigure}
+	\begin{subfigure}[b]{0.4\linewidth}
+		\includegraphics[width=\linewidth]{charts/events.jpg}
+		\caption{Corporate Events}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.4\linewidth}
+		\includegraphics[width=\linewidth]{charts/sales_growth.jpg}
+		\caption{Sales Growth}
+	\end{subfigure}
+	\caption{\company Analysis}
 \end{figure}
-\caption{\company Analysis}
 
-\csvtotabular{charts/comps.csv}
+\csvautotabular{charts/comps.csv}
 \begin{figure}[!h]
 
 \includegraphics[width=\linewidth]{charts/comps_graph.jpg}
+\caption{Comps Performance}
 
 \end{figure}
 
