@@ -41,7 +41,7 @@ funds_pretty.to_csv("charts/own_fundamentals.csv")
 
 ## SALES GROWTH
 
-sales_growth = funds[["revenue"]].pct_change(fill_method="ffill").iloc[1:] * 100
+sales_growth = funds[["revenue"]].iloc[::-1].pct_change(fill_method="ffill").iloc[1:] * 100
 sales_growth["positive"] = sales_growth["revenue"] > 0
 sales_growth.index = sales_growth.index.map(lambda x: x.strftime("%Y"))
 
