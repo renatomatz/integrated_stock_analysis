@@ -22,7 +22,7 @@ events = import_data.get_own_events(config)
 with open("charts/price.txt", "w") as f:
     f.write(str(float(data["close"].iloc[0])))
 
-## FUNDAMENTALS
+## FUNDAMENTALS CHART
 
 funds_pretty = funds.iloc[0:9]
 
@@ -71,12 +71,12 @@ elif all(sales_growth["positive"]):
 fig.savefig("charts/sales_growth.jpg")
 plt.clf()
 
-## PRICE AND EV/EBITDA
+## FUNDAMENTALS GRAPH
 fig = plt.figure()
 
 box_props = {"boxstyle": "round", "fc":"white"}
 
-ax1 = plt.subplot(211)
+ax1 = plt.subplot(221)
 
 data.close.plot(ax=ax1, color="blue", linewidth=LINE_WIDTH, alpha=ALPHA, legend=False)
 plt.annotate(str(float(data.close.iloc[-1])), (1, data.close.iloc[0]), 
@@ -86,7 +86,7 @@ ax1.set_ylabel("Stock Price ($)")
 plt.setp(ax1.get_xticklabels(), visible=False)
 ax1.grid()
 
-ax2 = plt.subplot(212, sharex=ax1)
+ax2 = plt.subplot(223, sharex=ax1) #223 as this will make it below price
 
 data.evebitda.plot(ax=ax2, color="green", linewidth=LINE_WIDTH, alpha=ALPHA)
 plt.annotate(str(float(data.evebitda.iloc[-1])), (1, data.evebitda.iloc[0]), 
@@ -96,9 +96,32 @@ ax2.set_ylabel("EV/EBITDA")
 ax2.set_xlabel(None)
 ax2.grid()
 
+
+# TODO: check this with internet
+
+ax3 = plt.subplot(222)
+
+funds["ev/sales"].plot(ax=ax3, color="green", linewidth=LINEWIDth, alpha=ALPHA)
+
+ax3.set_ylabel("EV/Sales")
+ax3.set_xlabel("Date")
+
+ax3.grid()
+
+
+ax4 = plt.subplot(224, shareax=ax3)
+
+funds.ebitda.plot(ax=ax4, color="green", linewidth=LINEWIDth, alpha=ALPHA)
+fund.workingcapital(ax=ax4, color="blue", linewidth=LINEWIDth, alpha=ALPHA)
+
+ax4.set_ylabel(None)
+ax4.set_xlabel(None)
+ax4.legend()
+
+ax4.grid()
+
 plt.savefig("charts/graph.jpg")
 plt.clf()
-
 ## COMPANY EVENTS
 events = events[(events.index > min(data.index)) & (events.index < max(data.index))]
 

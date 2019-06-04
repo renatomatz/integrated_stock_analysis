@@ -1,19 +1,24 @@
 import quandl
 import pandas as pd
+import json
 from datetime import datetime, timedelta
 
 def get_own_daily_metrics(config, key_file="key.txt"):
+
+    return get_daily_metrics(config["ticker"], config, key_file=key_file)
+
+def get_daily_metrics(ticker,config, key_file="key.txt"):
 
     _set_quandl_api_key(key_file)
 
     evebitda = quandl.get_table("SHARADAR/DAILY",
                                 paginate = True,
-                                ticker=config["ticker"],
+                                ticker=ticker,
                                 qopts={"columns": ["date", "evebitda"]})
     
     prices = quandl.get_table("SHARADAR/SEP",
                               paginate = True,
-                              ticker=config["ticker"],
+                              ticker=ticker,
                               qopts={"columns": ["date", "close"]})
 
     # evebitda = _read_and_standardize("test_files/evebitda.csv")
@@ -141,17 +146,25 @@ def get_own_events(config, key_file="key.txt"):
 
     return events
 
+def get_etf(config, key_file="key.txt"):
+    
+    _set_quandl_api_key(key_file)
+
+    # TODO implement this lookup and possibly dig deeper into the sic code thing
+
+    return quandl.get_table("SHARADAR/SFP", ticker=[config["etf"]],
+                            qopts={"columns":["date", "close"]})
+
+def get_sp500(key_file="key.txt"):
+
+    _set_quandl_api_key(key_file)
+
+    return quandl.get_table("SHARADAR/SFP", ticker="VOO",
+                            qopts={"columns":["date", "close"]})
+
 def get_config(file):
 
-    config = {}
-
-    with open(file, "r") as conf:
-        config["company"] = conf.readline()[8:-1]
-        config["ticker"] = conf.readline()[7:-1]
-        config["end_date"] = datetime.strptime(conf.readline()[12:-1], "%Y-%m-%d")
-        config["start_date"] = config["end_date"] - timedelta(days=700)
-
-    return config
+    return json.load(file)
 
 def round_col(df, cols, to="M"):
     new_cols = {}

@@ -2,7 +2,7 @@ import import_data
 import pandas as pd
 import matplotlib.pyplot as plt
 
-config = import_data.get_config("config.txt")
+config = import_data.get_config("config.json")
 comps = import_data.get_comps(config)
 comp_funds = import_data.get_comp_fundamentals([*comps["ticker"]])
 
@@ -32,8 +32,24 @@ comps_merged = comps_merged.set_index("Ticker")
 comps_merged.to_csv("charts/comps.csv")
 
 ## COMPS GRAPH
+etf = import_data.get_etf(config)
+sp500 = import_data.get_sp500()
+
+tickers = [config["ticker"]] + comps.ticker.unique()
+
+daily = import_data.get_daily_metrics(tickers, config)
+
+daily_prices = daily[["ticker", "close"]]
+daily_evebitda = daily["ticker", "evebitda"]
+del daily
+
+daily_prices = pd.concat(daily_prices, etf, sp500)
+del etf
+del sp500
+
 fun = lambda x: (x / x.loc[(x.index.get_level_values(0).min(), x.index.get_level_values(1)[0])]) * 100
-comp_funds["price_indexed"] = comp_funds.price.groupby("ticker").transform(fun)
+# indexing function
+daily_prices = daily_prices.close.groupby("ticker").transform(fun)
 
 def plot_groups(df, y_col, group=None, level=None, drop_level=None, ax=None, colors=["red", "green", "blue", "orange", "yellow", "purple"]):
     """
@@ -58,18 +74,22 @@ fig = plt.figure()
 
 ax1 = fig.add_subplot(211)
 
-plot_groups(comp_funds, "price_indexed", level=1, drop_level=1, ax=ax1)
+plot_groups(daily_prices, "price_indexed", level=1, drop_level=1, ax=ax1)
 
 ax1.set_xlabel(None)
 ax1.set_ylabel("Indexed Stock Price")
+ax1.legend("upper right")
+
 plt.grid()
 
 ax2 = fig.add_subplot(212, sharex=ax1)
 
-plot_groups(comp_funds, "ev/ebitda", level=1, drop_level=1, ax=ax2)
+plot_groups(daily_evebitda, "ev/ebitda", level=1, drop_level=1, ax=ax2)
 
 ax2.set_xlabel(None)
 ax2.set_ylabel("EV/EBITDA")
+ax2.legend("upper right")
+
 plt.grid()
 
 fig.savefig("charts/comps_graph.jpg")
