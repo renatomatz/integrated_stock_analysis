@@ -1,7 +1,49 @@
+"""
+TODO:
+- implement <Quandl_Interface> class
+- implement <get_etf> function
+"""
+
 import quandl
 import pandas as pd
 import json
 from datetime import datetime, timedelta
+
+class Quandl_Interface:
+    """Basic interface for interacting with one dataset using the Quandl API
+    """
+
+    dataset: str
+    filters: dict
+    data: object
+
+    _templates: dict
+    _mem_file: str
+    _API_KEY: int
+
+    def __init__(self):
+        pass
+
+    def add_template(self, name, cols):
+        pass
+
+    def remove_template(self, name):
+        pass
+
+    def get_table_template(self, template):
+        pass
+
+    def get_table_custom(self, *args, **kwargs):
+        pass
+
+    def update_filters(self, update):
+        pass
+
+    def update_dataset(self, new):
+        pass
+
+    def update_data(self):
+        pass
 
 def get_own_daily_metrics(config, key_file="key.txt"):
 
@@ -14,25 +56,26 @@ def get_daily_metrics(ticker,config, key_file="key.txt"):
     evebitda = quandl.get_table("SHARADAR/DAILY",
                                 paginate = True,
                                 ticker=ticker,
-                                qopts={"columns": ["date", "evebitda"]})
+                                qopts={"columns": ["ticker", "date", "evebitda"]})
     
     prices = quandl.get_table("SHARADAR/SEP",
                               paginate = True,
                               ticker=ticker,
-                              qopts={"columns": ["date", "close"]})
+                              qopts={"columns": ["ticker", "date", "close"]})
 
     # evebitda = _read_and_standardize("test_files/evebitda.csv")
     # prices = _read_and_standardize("test_files/prices.csv")
 
-    data = pd.merge(left=evebitda, right=prices, on="date", how="inner").set_index("date")
+    data = pd.merge(left=evebitda, right=prices, on=["ticker", "date"], how="inner").set_index("date")
 
     try:
-        data.loc[config["end_date"]]
+        data.loc[config["date"]]
     except KeyError:
         config["end_date"] = max(data.index)
         config["start_date"] = config["end_date"] - timedelta(days=700)
 
-    data = data[(data.index > config["start_date"]) & (data.index <= config["end_date"])]
+    # TODO: remove the comments
+    # data = data[(data.index > config["start_date"]) & (data.index <= config["end_date"])]
 
     return data
 
@@ -54,6 +97,26 @@ def get_own_fundamentals(config, key_file="key.txt"):
     data = data.set_index("calendardate")
 
     return data
+
+def get_own_all(config, key_file="key.txt"):
+    
+    _set_quandl_api_key(key_file)
+
+    return quandl.get_table("SHARADAR/SF1", ticker[config["ticker"]])
+
+def get_own_events(config, key_file="key.txt"):
+    
+    _set_quandl_api_key(key_file)
+
+    events = quandl.get_table("SHARADAR/EVENTS", ticker=[config["ticker"]], 
+                              qopts={"columns":["date", "eventcodes"]})
+
+    # events = _read_and_standardize("test_files/own_events.csv")
+
+    events["eventcodes"] = events["eventcodes"].map(lambda x: x.split("|"))
+
+    return events
+
 
 def get_comps(config, key_file="key.txt", config_file="config.txt", end=2019, years=5, time="close"):
 
@@ -133,18 +196,11 @@ def get_daily_comp_metrics(comps, key_file="key.txt"):
 
     return comp_metrics
 
-def get_own_events(config, key_file="key.txt"):
-    
+def get_comps_all(comps, key_file="key.txt"):
+
     _set_quandl_api_key(key_file)
 
-    events = quandl.get_table("SHARADAR/EVENTS", ticker=[config["ticker"]], 
-                              qopts={"columns":["date", "eventcodes"]})
-
-    # events = _read_and_standardize("test_files/own_events.csv")
-
-    events["eventcodes"] = events["eventcodes"].map(lambda x: x.split("|"))
-
-    return events
+    return quandl.get_table("SHARADAR/SF1", ticker=comps)
 
 def get_etf(config, key_file="key.txt"):
     
@@ -152,8 +208,10 @@ def get_etf(config, key_file="key.txt"):
 
     # TODO implement this lookup and possibly dig deeper into the sic code thing
 
-    return quandl.get_table("SHARADAR/SFP", ticker=[config["etf"]],
+    data = quandl.get_table("SHARADAR/SFP", ticker=[config["etf"]],
                             qopts={"columns":["date", "close"]})
+
+    return data
 
 def get_sp500(key_file="key.txt"):
 
@@ -164,7 +222,8 @@ def get_sp500(key_file="key.txt"):
 
 def get_config(file):
 
-    return json.load(file)
+    with open(file) as f:
+        return json.load(f)
 
 def round_col(df, cols, to="M"):
     new_cols = {}
@@ -179,7 +238,7 @@ def round_col(df, cols, to="M"):
 def _standardize_index(df):
     return df.set_index(pd.Series(range(len(df))))
 
-def _read_and_standardize(file, col="date"):
+def _read_and_standardize(file, col=["date"]):
 
     date_col = col[0] if isinstance(col, list) else col
 
