@@ -1,2 +1,4 @@
-Ticker,Name,Stock Price,Market Cap.,EV/EBITDA,EV/SALES,EV/FCF
-NKE,Nike Inc,71.8,115.72,22.54,3.17,29.4
+Ticker,Name,Stock Price,Ent. Value ($B),EV/EBITDA,EV/SALES,EV/FCF
+UTX,United Technologies Corp,106.48,102.227797722,8.99,1.54,23.13
+VZ,Verizon Communications Inc,56.22,342.705888978,8.29,2.62,19.38
+XOM,Exxon Mobil Corp,68.19,323.071310922,6.48,1.11,19.65
