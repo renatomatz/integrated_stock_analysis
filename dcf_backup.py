@@ -7,14 +7,12 @@ import pandas_datareader.data as web
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
 
-from quandl_interface import *
-
 class Stock:
     """Stock class for storing results from Discounted Cash Flow analyses and
     relevant stock data used by models
 
     ticker: company ticker symbol
-    data: <Equity> interace for interacting with quandl data
+    data: DataFrame containing all the company's fundamental data
     pgr: Perpetuity Growth Rate
     ke: Cost of Equity
     FCFE/DDM/REL: DCF <Model>.calculate() results
@@ -57,7 +55,9 @@ class Stock:
         self.FCFE = self.DDM = self.REL = None
 
         self.ticker = ticker
-        self.data = Equity(ticker)
+        self.data = quandl.get_table("SHARADAR/SF1", ticker=ticker)
+        self.data.set_index(pd.DatetimeIndex(self.data["calendardate"]),
+                            inplace=True)
 
         self._rfa = self._rfa_presets.get(rfa, rfa)
         self._mi = self._mi_presets.get(mi, mi)
@@ -102,8 +102,8 @@ class Stock:
         if not self.beta:
             self.update_beta()
 
-        start = min(self.data.get_dataset("SF1").index)
-        end = max(self.data.get_dataset("SF1").index)
+        start = min(self.data.index)
+        end = max(self.data.index)
 
         rf = web.DataReader(self._rfa, "fred", start, end).iloc[:, 0] / 100
 
@@ -121,21 +121,19 @@ class Stock:
         if not self.ke:
             self.update_ke()
 
-        self.pgr = pgr(self.data.get_dataset("SF1").capex.iloc[0], 
-                       self.data.get_dataset("SF1").workingcapital \
-                                                   .diff()[1],
-                       self.data.get_dataset("SF1").depamor.iloc[0],
-                       self.data.get_dataset("SF1").netinc.iloc[0],
+        self.pgr = pgr(self.data.capex.iloc[0], 
+                       self.data.workingcapital.iloc[0:2].diff()[1],
+                       self.data.depamor.iloc[0],
+                       self.data.netinc.iloc[0],
                        self.ke)
 
     def update_roe(self):
 
-        self.roe = roe(self.data.get_dataset("SF1").eps[0], 
-                       self.data.get_dataset("SF1").bvps[0])
+        self.roe = roe(self.data.eps[0], self.data.bvps[0])
 
     def update_beta(self):
 
-        rs = self.data.get_dataset("SF1").price.resample("Y") \
+        rs = self.data.price.resample("Y") \
                             .ffill() \
                             .pct_change()[1:] 
 
@@ -419,14 +417,14 @@ class Hamada_UL(Transformer):
         def wrapper(stock):
 
             assert stock.beta
-            assert stock.data.get_dataset("SF1") is not None
+            assert stock.data is not None
 
-            tax_rate = stock.data.get_dataset("SF1").taxexp[0] / stock.data.get_dataset("SF1").ebt[0]
+            tax_rate = stock.data.taxexp[0] / stock.data.ebt[0]
             
             return _hamada_u(stock.beta, 
                              tax_rate,
-                             stock.data.get_dataset("SF1").debt[0],
-                             stock.data.get_dataset("SF1").equity[0],
+                             stock.data.debt[0],
+                             stock.data.equity[0],
                              *self.args,
                              **self.kwargs)
 
@@ -444,14 +442,14 @@ class Hamada_RL(Transformer):
         def wrapper(stock):
 
             assert stock.beta
-            assert stock.data.get_dataset("SF1") is not None
+            assert stock.data is not None
 
-            tax_rate = stock.data.get_dataset("SF1").taxexp[0] / stock.data.get_dataset("SF1").ebt[0]
+            tax_rate = stock.data.taxexp[0] / stock.data.ebt[0]
 
             return _hamada_r(stock.beta, 
                              tax_rate,
-                             stock.data.get_dataset("SF1").debt[0],
-                             stock.data.get_dataset("SF1").equity[0],
+                             stock.data.debt[0],
+                             stock.data.equity[0],
                              *self.args,
                              **self.kwargs)
 
@@ -484,13 +482,13 @@ class Fernandez_UL(Transformer):
 
             beta_debt = beta(rd, rm)
 
-            tax_rate = stock.data.get_dataset("SF1").taxexp[0] / stock.data.get_dataset("SF1").ebt[0]
+            tax_rate = stock.data.taxexp[0] / stock.data.ebt[0]
 
             return _fernandez_u(stock.beta,
                                 beta_debt,
                                 tax_rate,
-                                stock.data.get_dataset("SF1").debt[0],
-                                stock.data.get_dataset("SF1").equity[0],
+                                stock.data.debt[0],
+                                stock.data.equity[0],
                                 *self.args,
                                 **self.kwargs)
 
@@ -523,13 +521,13 @@ class Fernandez_RL(Transformer):
 
             beta_debt = beta(rd, rm)
 
-            tax_rate = stock.data.get_dataset("SF1").taxexp[0] / stock.data.get_dataset("SF1").ebt[0]
+            tax_rate = stock.data.taxexp[0] / stock.data.ebt[0]
             
             return _fernandez_r(stock.beta,
                                 beta_debt,
                                 tax_rate,
-                                stock.data.get_dataset("SF1").debt[0],
-                                stock.data.get_dataset("SF1").equity[0],
+                                stock.data.debt[0],
+                                stock.data.equity[0],
                                 *self.args,
                                 **self.kwargs)
         return wrapper
@@ -558,10 +556,10 @@ class Central_Change_FC(Transformer):
 
         def wrapper(stock):
 
-            assert stock.data.get_dataset("SF1") is not None
-            assert self.col in stock.data.get_dataset("SF1").columns
+            assert stock.data is not None
+            assert self.col in stock.data.columns
 
-            ts = stock.data.get_dataset("SF1")[self.col].resample('Y').ffill()
+            ts = stock.data[self.col].resample('Y').ffill()
             p = ts.iloc[0]
             # get latest value before converting to percentage change
             ts = ts.pct_change()
@@ -600,13 +598,15 @@ class Central_Change_FC(Transformer):
 #         
 #         def wrapper(stock):
 # 
-#             assert stock.data.get_dataset("SF1") is not None
-#             assert self.col in stock.data.get_dataset("SF1").columns
+#             assert stock.data is not None
+#             assert self.col in stock.data.columns
 # 
-#             c_data = Comps(self.data).get_dataset("SF1",
-#                                                   columns=[self.col]).iloc[0]
-#             # create a <Comps> instance to make possibly get the data from
-#             # memory
+#             comps = [*get_comps({"ticker":stock.ticker})["ticker"]]
+#             # import comp ticker names
+#             
+#             c_data = quandl.get_table("SHARADAR/SF1", 
+#                                       ticker=comps,
+#                                       qopts={"columns":[self.col]}).iloc[0]
 # 
 #             c_data = c_data.groupby("ticker")\
 #                            .apply(lambda x: x[x.index.get_level_values(0) == \
@@ -639,20 +639,23 @@ class Central_Change_FC(Transformer):
 #         
 #         def wrapper(stock):
 # 
-#             assert stock.data.get_dataset("SF1") is not None
-#             assert self.y_col in stock.data.get_dataset("SF1").columns
-#             assert all([c in stock.data.get_dataset("SF1").columns for c in self.x_col])
+#             assert stock.data is not None
+#             assert self.y_col in stock.data.columns
+#             assert all([c in stock.data.columns for c in self.x_col])
 # 
-#             c_data = Comps(self.data).get_dataset("SF1",
-#                                                   columns=[self.y_col, 
-#                                                            self.x_col]) \
-#                                      .iloc[0]
+# 
+#             comps = [*get_comps({"ticker":stock.ticker})["ticker"]]
+# 
+#             c_data = quandl.get_table("SHARADAR/SF1",
+#                                       ticker=comps,
+#                                       qopts={"columns":[[self.y_col] \
+#                                                        + self.x_col]})
 # 
 #             reg = _lm(*self.args, **self.kwargs) \
 #                         .fit(c_data.loc[:, self.x_col].values, 
 #                              c_data[self.y_col].values.reshape(-1, 1))
 # 
-#             pred = reg.predict(stock.data.get_dataset("SF1").loc[:, self.x_col])
+#             pred = reg.predict(stock.data.loc[:, self.x_col])
 # 
 #             return pred
 # 
@@ -674,6 +677,7 @@ def p_val(n, r=0, t=1):
 
     else:
         raise TypeError("<n> is not of a supported type")          
+
     
 def term_val(val, pgr, ke):
     """Return an asset's terminal value

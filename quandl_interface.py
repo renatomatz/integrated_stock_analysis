@@ -42,7 +42,6 @@ class Interface:
         
         self._mem_file = new
 
-    @staticmethod
     def _ensure_api_enabled(f):
         """Decorator that checks if an API key is set. Handles problem or throws
         propper error message
@@ -464,6 +463,15 @@ class Comps(Equity):
 
         if not mem_file and isinstance(name, list):
             mem_file = "data/" + name[0] + "_C"
+
+        if isinstance(name, Equity):
+            name = name.get_comps()
+            market = name.market
+            industry = name.industry
+            start = name.start
+            end = name.end
+            mem_file = name._mem_file + "_C"
+            key = name._API_KEY
 
         super().__init__(name, market=market, industry=industry, start=start, 
                          end=end, mem_file=mem_file, key=key)
