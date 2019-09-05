@@ -1,0 +1,97 @@
+\documentclass{article}
+
+\usepackage{titlesec}
+\usepackage{titling}
+\usepackage[margin=2cm]{geometry}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{csvsimple}
+\usepackage{longtable}
+
+\titleformat{\section}[runin]
+{\bfseries\Large}
+{}
+{0cm}
+{}[\titlerule\\]
+
+\titleformat{\subsection}
+{\bfseries\large}
+{}
+{0cm}
+{}
+
+\renewcommand{\maketitle}{
+\hspace{-.4cm}\begin{minipage}[t]{.6\textwidth}
+{\huge\bfseries\thetitle}
+
+\vspace{.1cm}{\large\itshape\theauthor}
+
+renatomatz@gmail.com -- https://www.rmatz.xyz
+
+\end{minipage}
+\hfill\vline\hfill
+\begin{minipage}[t]{.3\textwidth}
+{\Large\company}
+
+\vspace{.1cm}{\large\bfseries\ticker}
+
+\$\input{charts/price.txt}
+\end{minipage}
+\vspace{.5cm}
+\hline\hline
+}
+
+\newcommand{\company}{Company}
+\newcommand{\ticker}{TKR}
+
+\begin{document}
+
+\title{Investment Analysis}
+\author{Renato Zimmermann}
+
+\maketitle
+
+\section{Industry Overview}
+
+\section{Company Overview}
+
+\section{Financials}
+
+\section{Strategic}
+
+\section{Recomendation}
+
+\newpage
+
+\section{Appendix}
+
+\vfill\centering
+\csvautotabular{charts/own_fundamentals.csv}
+\begin{figure}[!h]
+	\centering
+	\begin{subfigure}[b]{0.75\linewidth}
+		\includegraphics[width=\linewidth]{charts/graph.jpg}
+		\caption{Stock Prices and EV/EBITDA}	
+	\end{subfigure}
+	\begin{subfigure}[b]{0.4\linewidth}
+		\includegraphics[width=\linewidth]{charts/events.jpg}
+		\caption{Corporate Events}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.4\linewidth}
+		\includegraphics[width=\linewidth]{charts/sales_growth.jpg}
+		\caption{Sales Growth}
+	\end{subfigure}
+	\caption{\company Analysis}
+\end{figure}
+
+\csvautotabular{charts/comps.csv}
+\begin{figure}[!h]
+
+\includegraphics[width=\linewidth]{charts/comps_graph.jpg}
+\caption{Comps Performance}
+
+\end{figure}
+
+
+
+\end{document}
