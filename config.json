@@ -1,7 +1,6 @@
 {
-	"company": null,
-	"ticker": null,
-	"etf": null,
-	"start": null,
-	"end": null
+	"company": "Nike",
+	"ticker": "NKE",
+	"etf": "XRT",
+	"date": "2019-01-01" 
 }

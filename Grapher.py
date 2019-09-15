@@ -1,5 +1,6 @@
 """Class to process data from API Interfaces
 """
+import os
 
 import pandas as pd
 import numpy as np
@@ -7,7 +8,7 @@ import matplotlib.pyplot as plt
 
 from typing import List
 
-from Interface import Equity, Comps, Custom
+from Interface import Interface, Equity, Comps, Custom
 
 
 class Grapher:
@@ -61,7 +62,7 @@ class EquityGrapher(Grapher):
         price = str(float(prices["close"].iloc[0]))
 
         if save:
-            with open(inter._mem_file+"/price.txt", "w") as f:
+            with open(_chart_path(inter, "price.txt"), "w") as f:
                 f.write(price)
 
         return price
@@ -87,7 +88,7 @@ class EquityGrapher(Grapher):
         funds = funds.apply(lambda x: round(x, 2)).transpose()
 
         if save:
-            funds.to_csv(inter._make_path("fundamentals_chart"))
+            funds.to_csv(_chart_path(inter, "fundamentals_chart.csv"))
 
         return funds
 
@@ -163,7 +164,7 @@ class EquityGrapher(Grapher):
         ax4.grid()
 
         if save:
-            fig.savefig(inter._mem_file+"/fundamentals_graph.jpg")
+            fig.savefig(_chart_path(inter, "fundamentals_graph.jpg"))
 
         return fig
 
@@ -205,7 +206,7 @@ class EquityGrapher(Grapher):
 
 
         if save:
-            fig.savefig(inter._mem_file+"/sales_growth.jpg")
+            fig.savefig(_chart_path(inter, "sales_growth.jpg"))
 
         
         return fig
@@ -238,7 +239,7 @@ class EquityGrapher(Grapher):
         plt.grid()
 
         if save:
-            fig.savefig("charts/events.jpg")
+            fig.savefig(_chart_path(inter, "events.jpg"))
 
         return fig
         
@@ -291,7 +292,7 @@ class CompsGrapher(Grapher):
         # make ticker index
 
         if save:
-            comps_merged.to_csv("charts/comps.csv")
+            comps_merged.to_csv(_chart_path(inter, "comps.csv"))
 
         return comps_merged
 
@@ -364,7 +365,7 @@ class CompsGrapher(Grapher):
         plt.grid()
 
         if save:
-            fig.savefig("charts/comps_graph.jpg")
+            fig.savefig(_chart_path(inter, "comps_graph.jpg"))
 
         return fig
 
@@ -384,3 +385,16 @@ class CompsGrapher(Grapher):
 
             group_info[1].plot(ax=ax, color=self.colors[i])
             # plot grapth for each group precondition of at most 6 groups
+
+
+def _chart_path(inter, f):
+
+    path = "charts/" + \
+        (inter.ticker[0] if isinstance(inter, Comps) else inter.ticker) + \
+        "_C"*isinstance(inter, Comps) 
+
+    if not os.path.exists(path):
+        os.mkdir(path)
+
+    return path + "/" + f
+

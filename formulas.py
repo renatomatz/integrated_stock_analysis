@@ -11,8 +11,6 @@ import pandas_datareader.data as web
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
 
-from quandl_interface import Equity
-
 def p_val(n, r=0, t=1):
     """Return present value of a single value <n> at time <t> or the total present 
     value of an np.array/list <n> starting at time <t> 
@@ -136,7 +134,7 @@ def fernandez_r(beta_u, beta_d, tax_r, debt, equity):
     
     return beta_u + (beta_u - beta_d)*(1 - tax_r)*(debt/equity)
 
-def _same_len(data):
+def same_len(data):
     """Return data as arrays of the same length
 
     data: list of pd.Series

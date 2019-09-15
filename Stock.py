@@ -110,7 +110,7 @@ class Stock:
                                                           .ffill() \
                                                           .pct_change()[1:]
 
-        rf, rm = _same_len([rf, rm])
+        rf, rm = same_len([rf, rm])
 
         self.ke = capm_ret(self.beta, rf, rm)
 
@@ -143,7 +143,7 @@ class Stock:
                                                              .ffill() \
                                                              .pct_change()[1:]
 
-        rs, rm = _same_len([rs, rm])
+        rs, rm = same_len([rs, rm])
        
         self.beta = beta(rs, rm)
 

@@ -1,7 +1,11 @@
 """Define Transformers which convert Interface data into formats usable by models
 """
 
+import pandas as pd
+import numpy as np
 import pandas_datareader.data as web
+
+from formulas import *
 
 class Transformer:
     """Abstract Transformer decorator class
@@ -26,7 +30,7 @@ class Transformer:
         definition we should define a wrapper whose first argument is the
         <Stock> instance
 
-        Any args and kwargs used in the function should be defined upon 
+        Any args and kwargs use)d in the function should be defined upon 
         initialization of the Transformer
         """
         raise NotImplementedError() 
@@ -106,7 +110,7 @@ class Fernandez_UL(Transformer):
                                                         .ffill() \
                                                         .pct_change()[1:]
 
-            rd, rm = _same_len([rd, rm])
+            rd, rm = same_len([rd, rm])
 
             beta_debt = beta(rd, rm)
 
@@ -145,7 +149,7 @@ class Fernandez_RL(Transformer):
                                                         .ffill()\
                                                         .pct_change()[1:]
 
-            rd, rm = _same_len([rd, rm])
+            rd, rm = same_len([rd, rm])
 
             beta_debt = beta(rd, rm)
 

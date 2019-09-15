@@ -72,7 +72,7 @@ class Equity(Interface):
     start: pd.Timestamp
     end: pd.Timestamp
 
-    def __init__(self, name, key, market=None, industry=None, start=None, end=None,
+    def __init__(self, ticker, key, market=None, industry=None, start=None, end=None,
                  mem_file=None):
         """Initialize an <Equity> object 
 
@@ -103,19 +103,19 @@ class Equity(Interface):
         needed from one of the method calls
         """
 
-        if ".json" in name:
+        if ".json" in ticker:
 
             with open(name) as f:
                 cfg = json.load(f)
 
-            self.ticker = cfg["ticker"] if cfg["ticker"] else name
+            self.ticker = cfg["ticker"] if cfg["ticker"] else ticker
             self.market = cfg["market"] if cfg["market"] else market
             self.industry = cfg["industry"] if cfg["industry"] else industry
             self.start = cfg["start"] if cfg["start"] else start
             self.end = cfg["end"] if cfg["end"] else end
 
         else:
-            self.ticker = name
+            self.ticker = ticker
             self.market = market
             self.industry = industry
             self.start = start
@@ -222,12 +222,12 @@ class Equity(Interface):
         """
         return os.path.exists(self._make_path(name))
 
-    def _make_path(self, name):
-        """Return a path (not necessarily there) to a .csv file with a given
-        name
+    def _make_path(self, name, ext="csv"):
+        """Return a path (not necessarily there) to a file with a given
+        name and extention
         """
 
-        return self._mem_file + "/" + name + ".csv"
+        return self._mem_file + "/" + name + "." + ext
 
     def _filter_dates(self, data, start=None, end=None):
         """Filter data in accordance to the values set in <self.start> and
@@ -468,32 +468,32 @@ class Comps(Equity):
     Assumes main ticker is the first on the list
     """
 
-    name: List[str]
+    ticker: List[str]
 
-    def __init__(self, name, market=None, industry=None, start=None, end=None,
+    def __init__(self, ticker, market=None, industry=None, start=None, end=None,
                  mem_file=None, key=None):
-        """Initialize <Comps> object, if <name> is not a list of comps tickers
+        """Initialize <Comps> object, if <ticker> is not a list of comps tickers
         the <Equity.get_comps()> method will be used on it to try and find its
         comps and use those
         """
 
-        if not mem_file and isinstance(name, list):
-            mem_file = "data/" + name[0] + "_C"
+        if not mem_file and isinstance(ticker, list):
+            mem_file = "data/" + ticker[0] + "_C"
 
-        if isinstance(name, Equity):
-            name = name.get_comps()
-            market = name.market
-            industry = name.industry
-            start = name.start
-            end = name.end
-            mem_file = name._mem_file + "_C"
-            key = name._API_KEY
+        if isinstance(ticker, Equity):
+            ticker = ticker.get_comps()
+            market = ticker.market
+            industry = ticker.industry
+            start = ticker.start
+            end = ticker.end
+            mem_file = ticker._mem_file + "_C"
+            key = ticker._API_KEY
 
-        super().__init__(name, market=market, industry=industry, start=start, 
+        super().__init__(ticker, market=market, industry=industry, start=start, 
                          end=end, mem_file=mem_file, key=key)
 
-        if not isinstance(name, list):
-            self.name = super().get_comps()["ticker"]
+        if not isinstance(ticker, list):
+            self.ticker = super().get_comps()["ticker"]
 
     @Interface._ensure_api_enabled
     def get_comps(self):
@@ -571,7 +571,7 @@ class Custom(Interface):
         if not mem_file:
             mem_file = "data"
 
-        super().__init__(mem_file, key)
+        super().__init__(key=key, mem_file=mem_file)
 
     def get_yahoo_market_index(self, name, columns=None):
         """Get market data from Yahoo! finance using a <pandas.data_reader>
